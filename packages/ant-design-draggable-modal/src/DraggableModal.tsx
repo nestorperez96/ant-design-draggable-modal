@@ -9,6 +9,9 @@ import { ModalProps } from 'antd/lib/modal'
 export interface DraggableModalProps extends ModalProps {
     initialWidth?: number
     initialHeight?: number
+    initialX?: number
+    initialY?: number
+    resizable?: boolean
 }
 
 export const DraggableModal: FunctionComponent<DraggableModalProps> = (
@@ -29,6 +32,8 @@ export const DraggableModal: FunctionComponent<DraggableModalProps> = (
         id,
         initialHeight: props.initialHeight,
         initialWidth: props.initialWidth,
+        initialX: props.initialX,
+        initialY: props.initialY,
     })
 
     // We do this so that we don't re-render all modals for every state change.

@@ -16,6 +16,9 @@ interface ContextProps extends DraggableModalContextMethods {
     modalState: ModalState
     initialWidth?: number
     initialHeight?: number
+    initialX?: number
+    initialY?: number
+    resizable?: boolean
 }
 
 export type DraggableModalInnerProps = ModalProps & { children?: React.ReactNode } & ContextProps
@@ -29,11 +32,14 @@ function DraggableModalInnerNonMemo({
     title,
     initialWidth,
     initialHeight,
+    initialX,
+    initialY,
+    resizable = true,
     ...otherProps
 }: DraggableModalInnerProps) {
     // Call on mount and unmount.
     useEffect(() => {
-        dispatch({ type: 'mount', id, intialState: { initialWidth, initialHeight } })
+        dispatch({ type: 'mount', id, intialState: { initialWidth, initialHeight, initialX, initialY } })
         return () => dispatch({ type: 'unmount', id })
     }, [dispatch, id, initialWidth, initialHeight])
 
@@ -51,7 +57,7 @@ function DraggableModalInnerNonMemo({
 
     const { zIndex, x, y, width, height } = modalState
 
-    const style: React.CSSProperties = useMemo(() => ({ ...modalStyle, top: y, left: x, height }), [
+    const style: React.CSSProperties = useMemo(() => ({ ...modalStyle, top: y, left: x, height: resizable ? height : 'auto' }), [
         y,
         x,
         height,
@@ -89,7 +95,7 @@ function DraggableModalInnerNonMemo({
         <Modal
             wrapClassName="ant-design-draggable-modal"
             style={style}
-            width={width}
+            width={resizable ? width : undefined}
             destroyOnClose={true}
             mask={false}
             maskClosable={false}
@@ -99,7 +105,7 @@ function DraggableModalInnerNonMemo({
             {...otherProps}
         >
             {children}
-            <ResizeHandle onMouseDown={onMouseResize} />
+            {resizable && <ResizeHandle onMouseDown={onMouseResize} />}
         </Modal>
     )
 }
